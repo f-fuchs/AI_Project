@@ -15,6 +15,7 @@ class DoodleJumpEnv(gym.Env):
 
         self.dJWB = DoodleJumpWebDriver(frame_time)
 
+        self.size = size
         if size == "original":
             self.get_screenshot = self.dJWB.get_screenshot_grayscale_rescaled
         else:
@@ -54,7 +55,7 @@ class DoodleJumpEnv(gym.Env):
         self.actions[action]()
 
         # calculate reward
-        frame = self.get_screenshot()
+        frame = self.dJWB.get_screenshot_grayscale()
         # frame.show()
         new_score_frame = np.array(frame.crop((0, 0, 50, 20)))
         if np.array_equal(new_score_frame, self.last_score_frame):
@@ -67,9 +68,12 @@ class DoodleJumpEnv(gym.Env):
         new_menu_frame = np.array(frame.crop((120, 210, 200, 250)))
         done = np.array_equal(new_menu_frame, self.menu)
 
-        self.current_frame = frame
+        if self.size == "original":
+            self.current_frame = frame.resize((84, 84))
+        else:
+            self.current_frame = frame
         state = (
-            np.array(frame, dtype=np.single) / 255,
+            np.array(self.current_frame, dtype=np.single) / 255,
             np.array(self.get_screenshot(), dtype=np.single) / 255,
             np.array(self.get_screenshot(), dtype=np.single) / 255,
             np.array(self.get_screenshot(), dtype=np.single) / 255,
