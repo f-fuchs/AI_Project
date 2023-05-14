@@ -79,7 +79,16 @@ class DoodleNetCustom(nn.Module):
 
 
 class Doodle:
-    def __init__(self, net, state_dim, action_dim, save_dir, load=False):
+    def __init__(
+        self,
+        net,
+        state_dim,
+        action_dim,
+        save_dir,
+        load=False,
+        exporation_rate=0.5,
+        memory_len=1000,
+    ):
         self.state_dim = state_dim
         self.action_dim = action_dim
         self.save_dir = save_dir
@@ -100,13 +109,13 @@ class Doodle:
 
         self.net = self.net.to(device=self.device)
 
-        self.exploration_rate = 0.5
+        self.exploration_rate = exporation_rate
         self.exploration_rate_decay = 0.99999975
         self.exploration_rate_min = 0.1
         self.curr_step = 0
 
         self.save_every = 5e2  # no. of experiences between saving Mario Net
-        self.memory = deque(maxlen=1000)
+        self.memory = deque(maxlen=memory_len)
         self.batch_size = 32
         self.gamma = 0.9
         self.optimizer = torch.optim.Adam(self.net.parameters(), lr=0.00025)
