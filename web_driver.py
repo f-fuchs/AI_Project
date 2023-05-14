@@ -1,6 +1,6 @@
 import time
 from io import BytesIO
-
+import base64
 import numpy as np
 from PIL import Image, ImageOps
 from selenium import webdriver
