@@ -62,7 +62,7 @@ class DoodleNetCustom(nn.Module):
             nn.Flatten(start_dim=0),
             nn.Linear(2560, 512),
             nn.ReLU(),
-            nn.Linear(512, 4),
+            nn.Linear(512, output_dim),
         )
 
         self.target = copy.deepcopy(self.online)
