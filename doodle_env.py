@@ -6,26 +6,19 @@ from web_driver import DoodleJumpWebDriver
 
 
 class DoodleJumpEnv(gym.Env):
-    # Because of google colab, we cannot implement the GUI ('human' render mode)
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
     last_score_frame = np.empty((50, 20))
 
-    # observation space
-    # observation_space = Box(
-    #     low=0,
-    #     high=255,
-    #     shape=(4, 200, 300),
-    #     dtype=np.uint8
-    # )
-
-    def __init__(self, frame_time):
+    def __init__(self, frame_time, size):
         super(DoodleJumpEnv, self).__init__()
 
         self.dJWB = DoodleJumpWebDriver(frame_time)
-        # time.sleep(2)
-        # self.dJWB.start_game()
 
+        if size == "original":
+            self.get_screenshot = self.dJWB.get_screenshot_grayscale_rescaled
+        else:
+            self.get_screenshot = self.dJWB.get_screenshot_grayscale
         # Define action and observation space
         # They must be gym.spaces objects
         # Example when using discrete actions, we have two: left and right
@@ -48,14 +41,10 @@ class DoodleJumpEnv(gym.Env):
         """
         self.dJWB.restart_game()
         state = (
-            np.array(self.dJWB.get_screenshot_grayscale_rescaled(), dtype=np.single)
-            / 255,
-            np.array(self.dJWB.get_screenshot_grayscale_rescaled(), dtype=np.single)
-            / 255,
-            np.array(self.dJWB.get_screenshot_grayscale_rescaled(), dtype=np.single)
-            / 255,
-            np.array(self.dJWB.get_screenshot_grayscale_rescaled(), dtype=np.single)
-            / 255,
+            np.array(self.get_screenshot(), dtype=np.single) / 255,
+            np.array(self.get_screenshot(), dtype=np.single) / 255,
+            np.array(self.get_screenshot(), dtype=np.single) / 255,
+            np.array(self.get_screenshot(), dtype=np.single) / 255,
         )
         state = np.array(state)
         return state
@@ -65,7 +54,7 @@ class DoodleJumpEnv(gym.Env):
         self.actions[action]()
 
         # calculate reward
-        frame = self.dJWB.get_screenshot_grayscale_rescaled()
+        frame = self.get_screenshot()
         # frame.show()
         new_score_frame = np.array(frame.crop((0, 0, 50, 20)))
         if np.array_equal(new_score_frame, self.last_score_frame):
@@ -81,12 +70,9 @@ class DoodleJumpEnv(gym.Env):
         self.current_frame = frame
         state = (
             np.array(frame, dtype=np.single) / 255,
-            np.array(self.dJWB.get_screenshot_grayscale_rescaled(), dtype=np.single)
-            / 255,
-            np.array(self.dJWB.get_screenshot_grayscale_rescaled(), dtype=np.single)
-            / 255,
-            np.array(self.dJWB.get_screenshot_grayscale_rescaled(), dtype=np.single)
-            / 255,
+            np.array(self.get_screenshot(), dtype=np.single) / 255,
+            np.array(self.get_screenshot(), dtype=np.single) / 255,
+            np.array(self.get_screenshot(), dtype=np.single) / 255,
         )
         state = np.array(state)
         return state, reward, done
