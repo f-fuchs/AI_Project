@@ -59,7 +59,7 @@ class DoodleNetCustom(nn.Module):
             nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1),
             nn.ReLU(),
             nn.MaxPool2d(5, stride=3),
-            nn.Flatten(start_dim=0),
+            nn.Flatten(),
             nn.Linear(2560, 512),
             nn.ReLU(),
             nn.Linear(512, output_dim),
