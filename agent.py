@@ -26,7 +26,7 @@ class DoodleNetOriginal(nn.Module):
             nn.Linear(3136, 512),
             nn.ReLU(),
             nn.Linear(512, output_dim),
-        )
+       )
 
         self.target = copy.deepcopy(self.online)
 
@@ -95,7 +95,7 @@ class Doodle:
 
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
-        # Mario's DNN to predict the most optimal action - we implement this in the Learn section
+        # Doodle's DNN to predict the most optimal action - we implement this in the Learn section
         if net == "original":
             self.net = DoodleNetOriginal(self.state_dim, self.action_dim).float()
         else:
@@ -103,7 +103,7 @@ class Doodle:
 
         if load:
             self.net.load_state_dict(
-                torch.load(self.save_dir / ".." / ".." / "mario_net_current.chkpt")
+                torch.load(self.save_dir / ".." / ".." / "doodle_net_current.chkpt")
             )
             self.net.eval()
 
@@ -114,7 +114,7 @@ class Doodle:
         self.exploration_rate_min = 0.1
         self.curr_step = 0
 
-        self.save_every = 5e2  # no. of experiences between saving Mario Net
+        self.save_every = 5e2  # no. of experiences between saving Doodle Net
         self.memory = deque(maxlen=memory_len)
         self.batch_size = 32
         self.gamma = 0.9
@@ -131,7 +131,7 @@ class Doodle:
         Inputs:
         state(``LazyFrame``): A single observation of the current state, dimension is (state_dim)
         Outputs:
-        ``action_idx`` (``int``): An integer representing which action Mario will perform
+        ``action_idx`` (``int``): An integer representing which action Doodle will perform
         """
         # EXPLORE
         if np.random.rand() < self.exploration_rate:
@@ -225,12 +225,12 @@ class Doodle:
 
     def save(self):
         save_path = (
-            self.save_dir / f"mario_net_{int(self.curr_step // self.save_every)}.chkpt"
+            self.save_dir / f"doodle_net_{int(self.curr_step // self.save_every)}.chkpt"
         )
-        current_path = self.save_dir / "mario_net_current.chkpt"
+        current_path = self.save_dir / "doodle_net_current.chkpt"
         # torch.save(self.net.state_dict(), save_path)
         torch.save(self.net.state_dict(), current_path)
-        print(f"MarioNet saved to {save_path} at step {self.curr_step}")
+        print(f"DoodleNet saved to {save_path} at step {self.curr_step}")
 
     def learn(self):
         if self.curr_step % self.sync_every == 0:
