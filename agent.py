@@ -95,7 +95,7 @@ class Doodle:
 
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
-        # Doodle's DNN to predict the most optimal action - we implement this in the Learn section
+        # Doodle's CNN to predict the most optimal action - we implement this in the Learn section
         if net == "original":
             self.net = DoodleNetOriginal(self.state_dim, self.action_dim).float()
         else:
