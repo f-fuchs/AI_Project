@@ -59,9 +59,9 @@ class DoodleJumpEnv(gym.Env):
         # frame.show()
         new_score_frame = np.array(frame.crop((0, 0, 50, 20)))
         if np.array_equal(new_score_frame, self.last_score_frame):
-            reward = 1
-        else:
             reward = 0
+        else:
+            reward = 1
         self.last_score_frame = new_score_frame
 
         # check if done
