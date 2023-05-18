@@ -88,6 +88,7 @@ class Doodle:
         load=False,
         exporation_rate=0.5,
         memory_len=1000,
+        exploration_rate_decay=0.99999975
     ):
         self.state_dim = state_dim
         self.action_dim = action_dim
