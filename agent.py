@@ -111,7 +111,7 @@ class Doodle:
         self.net = self.net.to(device=self.device)
 
         self.exploration_rate = exporation_rate
-        self.exploration_rate_decay = 0.99999975
+        self.exploration_rate_decay = exploration_rate_decay
         self.exploration_rate_min = 0.1
         self.curr_step = 0
 
